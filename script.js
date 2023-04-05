@@ -4,6 +4,14 @@ const itemList = document.getElementById("item-list");
 const clearButton = document.getElementById("clear");
 const itemFilter = document.getElementById("filter");
 
+function displayItems() {
+  const itemsFromStorage = getItemsFromStorage();
+  itemsFromStorage.forEach(item => {
+    addItemToDOM(item);
+  });
+  checkUI();
+}
+
 function addItem(e) {
   e.preventDefault();
 
@@ -32,20 +40,6 @@ function addItemToDOM(item) {
   itemList.appendChild(li);
 }
 
-function addItemToStorage(item) {
-  let itemFromStorage;
-
-  if (localStorage.getItem("items") === null) {
-    itemFromStorage = [];
-  } else {
-    itemFromStorage = JSON.parse(localStorage.getItem("items"));
-  }
-
-  itemFromStorage.push(item);
-
-  localStorage.setItem("items", JSON.stringify(itemFromStorage));
-}
-
 function createButton(classes) {
   const button = document.createElement("button");
   button.className = classes;
@@ -58,6 +52,26 @@ function createIcon(classes) {
   const icon = document.createElement("i");
   icon.className = classes;
   return icon;
+}
+
+function addItemToStorage(item) {
+  const itemFromStorage = getItemsFromStorage();
+
+  itemFromStorage.push(item);
+
+  localStorage.setItem("items", JSON.stringify(itemFromStorage));
+}
+
+function getItemsFromStorage() {
+  let itemFromStorage;
+
+  if (localStorage.getItem("items") === null) {
+    itemFromStorage = [];
+  } else {
+    itemFromStorage = JSON.parse(localStorage.getItem("items"));
+  }
+
+  return itemFromStorage;
 }
 
 function removeItem(e) {
@@ -103,9 +117,14 @@ function checkUI() {
   }
 }
 
-itemForm.addEventListener("submit", addItem);
-itemList.addEventListener("click", removeItem);
-clearButton.addEventListener("click", clearItems);
-itemFilter.addEventListener("input", filterItems);
+function init() {
+  itemForm.addEventListener("submit", addItem);
+  itemList.addEventListener("click", removeItem);
+  clearButton.addEventListener("click", clearItems);
+  itemFilter.addEventListener("input", filterItems);
+  document.addEventListener("DOMContentLoaded", displayItems);
 
-checkUI();
+  checkUI();
+}
+
+init();
