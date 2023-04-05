@@ -14,17 +14,36 @@ function addItem(e) {
     return;
   }
 
+  addItemToDOM(newItem);
+  addItemToStorage(newItem);
+
+  checkUI();
+
+  itemInput.value = "";
+}
+
+function addItemToDOM(item) {
   const li = document.createElement("li");
-  li.appendChild(document.createTextNode(newItem));
+  li.appendChild(document.createTextNode(item));
 
   const button = createButton("remove-item btn-link text-red");
   li.appendChild(button);
 
   itemList.appendChild(li);
+}
 
-  checkUI();
+function addItemToStorage(item) {
+  let itemFromStorage;
 
-  itemInput.value = "";
+  if (localStorage.getItem("items") === null) {
+    itemFromStorage = [];
+  } else {
+    itemFromStorage = JSON.parse(localStorage.getItem("items"));
+  }
+
+  itemFromStorage.push(item);
+
+  localStorage.setItem("items", JSON.stringify(itemFromStorage));
 }
 
 function createButton(classes) {
